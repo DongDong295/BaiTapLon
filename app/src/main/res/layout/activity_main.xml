@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#E58AF4"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/refresh"
+            android:padding="6dp">
+        </Button>
+        <EditText
+        android:id="@+id/editDS"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        tools:ignore="MissingConstraints"
+        android:background="@drawable/background_edit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
+        android:hint="Tìm kiếm truyện"
+        android:gravity="center"/>
+    </RelativeLayout>
+    <GridView
+        android:id="@+id/gvDSTruyen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="2">
+    </GridView>
+</LinearLayout>

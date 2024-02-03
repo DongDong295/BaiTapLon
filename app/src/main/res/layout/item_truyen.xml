@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="150dp">
+    <ImageView
+        android:id="@+id/ivAnhTruyen"
+        android:src="@drawable/teste"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/tvChapter"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#83000000"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:text="Chapter"
+        android:textSize="10dp"/>
+</RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvTenTruyenChapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tên truyện"
+        android:textColor="#000000"
+        android:textAlignment="viewStart"
+        android:textSize="20dp">
+    </TextView>
+</LinearLayout>
