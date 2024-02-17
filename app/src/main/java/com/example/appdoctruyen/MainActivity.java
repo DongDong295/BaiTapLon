@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity{
 
     public void GetJsonArray(Context context) {
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = "http://192.168.1.8:8080/get/get.php";
+        String url = "https://appuddd.000webhostapp.com/get.php";
         truyenTranhArray = new ArrayList<>();
         JsonArrayRequest request = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {

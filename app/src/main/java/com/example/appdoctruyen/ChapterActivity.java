@@ -43,20 +43,28 @@ public class ChapterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter);
         context = this;
+        arrChap=new ArrayList<>();
         init();
         anhXa();
         setUp();
         setClick();
-        GetChapJsonArray(this);
+        GetChapJsonArray(this, new ChapCallback() {
+            @Override
+            public void onSuccess(ArrayList<ChapTruyen> chapList) {
+
+                arrChap = chapList;
+                chapTruyenAdapter = new ChapTruyenAdapter(context, 0, arrChap);
+                setUp();
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+            }
+        });
     }
     private void init(){
         Bundle b = getIntent().getBundleExtra("data");
         item =(ItemTruyen) b.getSerializable("chap");
-
-        arrChap=new ArrayList<>();
-        /*for(int i=0; i <20;i++){
-            arrChap.add(new ChapTruyen("Placeholder Value", "1-1-2024"));
-        }*/
         chapTruyenAdapter = new ChapTruyenAdapter(context, 0, arrChap);
     }
     private void anhXa(){
@@ -73,35 +81,48 @@ public class ChapterActivity extends AppCompatActivity {
         dsChap.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(ChapterActivity.this,DocTruyenActivity.class));
+                Bundle b = new Bundle();
+                b.putString("idChap", arrChap.get(position).getId());
+                //Log.d("ddd", "x"+arrChap.size());
+                Intent t = new Intent(ChapterActivity.this,DocTruyenActivity.class);
+                t.putExtra("data",b);
+                startActivity(t);
             }
         });
     }
 
-    public void GetChapJsonArray(Context context) {
+    public void GetChapJsonArray(Context context, final ChapCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = "http://192.168.1.8:8080/get/getChap.php?id=0"+item.id;
+        String url = "https://appuddd.000webhostapp.com/getChap.php?id=0" + item.id;
         arrChap = new ArrayList<>();
+
         JsonArrayRequest request = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 arrChap.add(new ChapTruyen(jsonObject));
                                 chapTruyenAdapter = new ChapTruyenAdapter(context, 0, arrChap);
-                                setUp();
-                            } catch (JSONException e) {
                             }
+                            callback.onSuccess(arrChap);
+                        } catch (JSONException e) {
+                            callback.onError(new VolleyError(e));
                         }
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error);
+                    }
+                }
         );
         queue.add(request);
+    }
+    public interface ChapCallback {
+        void onSuccess(ArrayList<ChapTruyen> chapList);
+        void onError(VolleyError error);
     }
 }
