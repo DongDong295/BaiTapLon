@@ -1,5 +1,6 @@
 package com.example.appdoctruyen.adapter;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,18 +31,9 @@ public class TruyenTranhAdapter extends ArrayAdapter<ItemTruyen> {
         this.arr = new ArrayList<>(objects);
     }
 
-    public void SortTruyen(String s){
-        s=s.toUpperCase();
-        int k = 0;
-        for(int i = 0; i < arr.size(); i++){
-            ItemTruyen tr = arr.get(i);
-            String ten = tr.getTenTruyen().toUpperCase();
-            if(ten.indexOf(s) >= 0){
-                arr.set(i, arr.get(k));
-                arr.set(k,tr);
-                k++;
-            }
-        }
+    public void SortTruyen(ArrayList<ItemTruyen> list){
+        this.arr = list;
+        notifyDataSetChanged();
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

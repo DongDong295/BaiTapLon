@@ -1,6 +1,7 @@
 package com.example.appdoctruyen;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 
 import android.content.ClipData;
 import android.content.Context;
@@ -24,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.appdoctruyen.adapter.ChapTruyenAdapter;
 import com.example.appdoctruyen.adapter.TruyenTranhAdapter;
 
 import org.json.JSONArray;
@@ -37,8 +39,9 @@ public class MainActivity extends AppCompatActivity{
     GridView dsTruyen;
     TruyenTranhAdapter adapter;
     ArrayList<ItemTruyen> truyenTranhArray;
-    EditText thanhTimKiem;
     Button refreshButton;
+
+    androidx.appcompat.widget.SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,37 +49,86 @@ public class MainActivity extends AppCompatActivity{
         init();
         anhXa();
         setClick();
-        GetJsonArray(this);
+        GetJsonArray(this, new TruyenCallback() {
+            @Override
+            public void onSuccess(ArrayList<ItemTruyen> list) {
+                truyenTranhArray = new ArrayList<>();
+                truyenTranhArray = list;
 
+                adapter = new TruyenTranhAdapter(MainActivity.this, 0, truyenTranhArray);
+                setUp();
+            }
+            @Override
+            public void onError(VolleyError error) {
+
+            }
+        });
+        searchView = findViewById(R.id.searchBar);
+        searchView.clearFocus();
         refreshButton = findViewById(R.id.refreshButton);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GetJsonArray(MainActivity.this);
+                GetJsonArray(MainActivity.this, new TruyenCallback() {
+                    @Override
+                    public void onSuccess(ArrayList<ItemTruyen> list) {
+                        truyenTranhArray = list;
+                        adapter = new TruyenTranhAdapter(MainActivity.this, 0, truyenTranhArray);
+                        dsTruyen.setAdapter(adapter);
+                        //setUp();
+                    }
+                    @Override
+                    public void onError(VolleyError error) {
+
+                    }
+                });
                 Toast.makeText(MainActivity.this, "Refreshing", Toast.LENGTH_SHORT).show();
+            }
+        });
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                fileList(newText);
+                return true;
+            }
+        });*/
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                fileList(newText);
+                return true;
             }
         });
     }
 
+    private void fileList(String newText) {
+        ArrayList<ItemTruyen> item = new ArrayList<>();
+        for(ItemTruyen itemTruyen : truyenTranhArray){
+            if(itemTruyen.getTenTruyen().toLowerCase().contains(newText.toLowerCase())){
+                item.add(itemTruyen);
+            }
+        }
+        truyenTranhArray = item;
+        if(!item.isEmpty()) {
+            adapter = new TruyenTranhAdapter(MainActivity.this, 0, truyenTranhArray);
+            dsTruyen.setAdapter(adapter);
+            //adapter.SortTruyen(item);
+        }
+        else{
+        }
+    }
+
     private void setClick() {
-        thanhTimKiem.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String text = thanhTimKiem.getText().toString();
-                adapter.SortTruyen(text);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String text = thanhTimKiem.getText().toString();
-                adapter.SortTruyen(text);
-            }
-        });
         dsTruyen.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -100,10 +152,10 @@ public class MainActivity extends AppCompatActivity{
     }
     private void anhXa(){
         dsTruyen = findViewById(R.id.gvDSTruyen);
-        thanhTimKiem = findViewById(R.id.editDS);
+        //thanhTimKiem = findViewById(R.id.editDS);
     }
 
-    public void GetJsonArray(Context context) {
+    public void GetJsonArray(Context context, final TruyenCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = "https://appuddd.000webhostapp.com/get.php";
         truyenTranhArray = new ArrayList<>();
@@ -116,10 +168,10 @@ public class MainActivity extends AppCompatActivity{
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 truyenTranhArray.add(new ItemTruyen(jsonObject));
                                 adapter = new TruyenTranhAdapter(MainActivity.this, 0 , truyenTranhArray);
-                                setUp();
                             } catch (JSONException e) {
                             }
                         }
+                        callback.onSuccess(truyenTranhArray);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -129,4 +181,9 @@ public class MainActivity extends AppCompatActivity{
         );
         queue.add(request);
     }
+    public interface TruyenCallback {
+        void onSuccess(ArrayList<ItemTruyen> list);
+        void onError(VolleyError error);
+    }
+
 }
