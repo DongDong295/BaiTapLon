@@ -32,7 +32,7 @@ public class TruyenTranhAdapter extends ArrayAdapter<ItemTruyen> {
     }
 
     public void SortTruyen(ArrayList<ItemTruyen> list){
-        this.arr = list;
+
         notifyDataSetChanged();
     }
     @Override

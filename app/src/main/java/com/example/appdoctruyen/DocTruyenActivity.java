@@ -45,7 +45,6 @@ public class DocTruyenActivity extends AppCompatActivity {
         arrUrlAnh = new ArrayList<>();
         Bundle b = getIntent().getBundleExtra("data");
         idChap = b.getString("idChap");
-        Log.d("ddd", idChap);
     }
 
     private void anhXa() {

@@ -113,19 +113,27 @@ public class MainActivity extends AppCompatActivity{
 
     private void fileList(String newText) {
         ArrayList<ItemTruyen> item = new ArrayList<>();
+        if(newText.length() == 0){
+            GetJsonArray(this, new TruyenCallback() {
+                @Override
+                public void onSuccess(ArrayList<ItemTruyen> list) {
+
+                    adapter = new TruyenTranhAdapter(MainActivity.this, 0, truyenTranhArray);
+                    setUp();
+                }
+                @Override
+                public void onError(VolleyError error) {
+
+                }
+            });
+        }
         for(ItemTruyen itemTruyen : truyenTranhArray){
             if(itemTruyen.getTenTruyen().toLowerCase().contains(newText.toLowerCase())){
                 item.add(itemTruyen);
             }
         }
-        truyenTranhArray = item;
-        if(!item.isEmpty()) {
-            adapter = new TruyenTranhAdapter(MainActivity.this, 0, truyenTranhArray);
-            dsTruyen.setAdapter(adapter);
-            //adapter.SortTruyen(item);
-        }
-        else{
-        }
+        adapter = new TruyenTranhAdapter(MainActivity.this, 0, item);
+        dsTruyen.setAdapter(adapter);
     }
 
     private void setClick() {
